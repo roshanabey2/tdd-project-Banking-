@@ -19,5 +19,5 @@ type Dollar struct {
 }
 
 func (d Dollar) Times(multiplier int) Dollar {
-	return Dollar{amount: 10}
+	return Dollar{d.amount * multiplier}
 }
