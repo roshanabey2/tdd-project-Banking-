@@ -14,16 +14,14 @@ class Money {
 }
 
 let fiveDollars = new Money (5, "USD")
-let tenDollars = fiveDollars.times(2)
+let tenDollars = new Money(10, "USD")
 let tenEuros = new Money(10, "EUR")
-let twentyEuros = tenEuros.times(2);
+let twentyEuros = new Money(20, "EUR")
 let originalMoney = new Money(4002, "KRW")
 let actualMoneyAfterDivision = originalMoney.divide(4)
 let expectedMoneyAfterDivision = new Money(1000.5, "KRW")
-assert.strictEqual(tenDollars.amount, 10);
-assert.strictEqual(tenDollars.currency, "USD")
-assert.strictEqual(twentyEuros.amount, 20)
-assert.strictEqual(twentyEuros.currency, "EUR")
+assert.deepstrictEqual(fiveDollars.times(2), tenDollars);
+assert.deepstrictEqual(tenEuros.times(2), twentyEuros);
 assert.deepStrictEqual(actualMoneyAfterDivision, expectedMoneyAfterDivision)
 
 

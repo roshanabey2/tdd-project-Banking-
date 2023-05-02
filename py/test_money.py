@@ -9,30 +9,27 @@ class Money:
     
     def divide(self, divisor):
         return Money(self.amount/divisor, self.currency)
+    
+    def __eq__(self, other):
+        return self.amount == other.amount and self.currency == other.currency
 
 
 
 class TestMoney(unittest.TestCase):
     def testMultiplicationInDollars(self):
         fiveDollars = Money(5, "USD")
-        tenDollars = fiveDollars.times(2)
-        self.assertEqual(10, tenDollars.amount)
-        self.assertEqual("USD", tenDollars.currency)
+        tenDollars = Money(10, "USD")
+        self.assertEqual(tenDollars, fiveDollars.times(2))
 
     def testMultiplicationInEuros(self):
         tenEuros = Money(10, "EUR")
-        twentyEuros = tenEuros.times(2)
-        self.assertEqual(20, twentyEuros.amount)
-        self.assertEqual("EUR",twentyEuros.currency)
+        twentyEuros = Money(20, "EUR")
+        self.assertEqual(twentyEuros, tenEuros.times(2))
 
     def testDivision(self):
         originalMoney = Money(4002, "KRW")
-        actualMoneyAfterDivison = originalMoney.divide(4)
         expectedMoneyAfterDivision = Money(1000.5, "KRW")
-        self.assertEqual(expectedMoneyAfterDivision.amount,
-                        actualMoneyAfterDivison.amount)
-        self.assertEqual(actualMoneyAfterDivison.currency,
-                         expectedMoneyAfterDivision.currency)
+        self.assertEqual(expectedMoneyAfterDivision, originalMoney.divide(4))
         
 if __name__=='__main__':
     unittest.main()
