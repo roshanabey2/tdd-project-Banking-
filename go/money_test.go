@@ -66,9 +66,14 @@ func (m Money) Divide(divisor int) Money {
 type Portfolio []Money
 
 func (p Portfolio) Add(money Money) Portfolio {
+	p = append(p, money)
 	return p
 }
 
 func (p Portfolio) Evaluate(currency string) Money {
-	return Money{amount: 15, currency: "USD"}
+	total := 0.0
+	for _, m := range p {
+		total = total + m.amount
+	}
+	return Money{amount: total, currency: currency}
 }
