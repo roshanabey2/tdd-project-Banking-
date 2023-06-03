@@ -1,6 +1,7 @@
 const assert = require('assert');
 const Money = require('./money');
 const Portfolio = require('./portfolio');
+const { test } = require('node:test');
 
 
 class MoneyTest {
@@ -26,11 +27,32 @@ class MoneyTest {
         assert.deepStrictEqual(fifteenDollars, portfolio.evaluate("USD"))
     }
 
+    getAllTestMethods() {
+        let moneyProtype = MoneyTest.prototype;
+        let allProps = Object.getOwnPropertyNames(moneyProtype)
+        let testMethods = allProps.filter(p => {
+            return typeof moneyProtype[p] === 'function' && p.startsWith("test");
+        });
+        return testMethods
+    } 
+
     runAllTests() {
-        this.testMultiplication();
-        this.testDvision();
-        this.testAddition();
+       let testMethods = this.getAllTestMethods()
+        testMethods.forEach( m => {
+            console.log("Running: %s()", m);
+           let method = Reflect.get(this, m);
+           try {
+            Reflect.apply(method, this, []);
+           } catch (e) {
+            if (e instanceof assert.AssertionError) {
+                console.log(e);
+            } else {
+                throw e;
+            }
+            }
+        });
     }
+
 }
 
 new MoneyTest().runAllTests();
