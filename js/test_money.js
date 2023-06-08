@@ -39,13 +39,25 @@ class MoneyTest {
     }
 
     testAdditionOfDollarsAndWon() {
-        let oneDollar = new Money(1, "USD")
-        let elvelenHundredWon = new Money(1100, "KRW")
-        let portfolio = new Portfolio()
+        let oneDollar = new Money(1, "USD");
+        let elvelenHundredWon = new Money(1100, "KRW");
+        let portfolio = new Portfolio();
 
-        portfolio.add(oneDollar, elvelenHundredWon)
-        let expectedValue = new Money(2200, "KRW")
-        assert.deepStrictEqual(portfolio.evaluate("KRW"), expectedValue)
+        portfolio.add(oneDollar, elvelenHundredWon);
+        let expectedValue = new Money(2200, "KRW");
+        assert.deepStrictEqual(portfolio.evaluate("KRW"), expectedValue);
+    }
+
+    testAdditionWithMultipleMissingExchangeRates() {
+        let oneDollar = new Money(1, "USD");
+        let oneEuro = new Money(1, "EUR");
+        let oneWon = new Money(1, "KRW");
+
+        let portfolio = new Portfolio();
+        portfolio.add(oneDollar, oneEuro, oneWon);
+        let expectedError = new Error(
+            "Missing exchange rate(s):[USD->Kaligan,EUR->Kaligan,KRW->Kaligan]");
+            assert.throws(function() {portfolio.evaluate("Kaligan")}, expectedError);
     }
 
     getAllTestMethods() {
