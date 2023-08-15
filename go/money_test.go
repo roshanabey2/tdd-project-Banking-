@@ -1,9 +1,18 @@
 package main
 
 import (
+	"reflect"
 	s "tdd/stocks"
 	"testing"
 )
+
+var bank s.Bank
+
+func init() {
+	bank = s.NewBank()
+	bank.AddExchangeRate("EUR", "USD", 1.2)
+	bank.AddExchangeRate("USD", "KRW", 1100)
+}
 
 func assertEqual(t *testing.T, expected interface{}, actual interface{}) {
 	if expected != actual {
@@ -28,9 +37,10 @@ func TestAddition(t *testing.T) {
 
 	portfolio = portfolio.Add(fiveDollars)
 	portfolio = portfolio.Add(tenDollars)
-	portfolioInDollars, _ = portfolio.Evaluate("USD")
+	portfolioInDollars, err := portfolio.Evaluate(bank, )
 
-	assertEqual(t, fifteenDollars, portfolioInDollars)
+	assertNil(t, err)
+	assertEqual(t, fifteenDollars, *&portfolioInDollars)
 
 }
 
@@ -89,15 +99,27 @@ func TestAdditionofMultipleMissingExchangeRates(t *testing.T) {
 }
 
 func TestConversion(t *testing.T) {
-	bank := s.newBank()
+	bank := s.NewBank()
 	bank.AddExchangeRate("EUR", "USD", 1.2)
 	tenEuros := s.NewMoney(10, "EUR")
 	actualConvertedMoney, err := bank.Convert(tenEuros, "USD")
 	assertNil(t, err)
-	assertEqual(t, s.newMoney(12, "USD"), actualConvertedMoney)
+	assertEqual(t, s.NewMoney(12, "USD"), *actualConvertedMoney)
 }
 
-func assertNil(t *testing.T, err error)
-if err != nil {
-	t.Errorf(("Expected error to be nil, found [%s]", err ))
+func TestConversionWithMissingExchangeRate(t *testing.T) {
+	bank := s.NewBank()
+	tenEuros := s.NewMoney(10, "EUR")
+	actualConvertedMoney, err := bank.Convert(tenEuros, "Kaligan")
+	if actualConvertedMoney != nil {
+		t.Errorf("Expected money to be nil, found [%+v]", actualConvertedMoney)
+	}
+	assertNil(t, actualConvertedMoney)
+	assertEqual(t, "EUR->Kaligan", err.Error())
+}
+
+func assertNil(t *testing.T, actual interface{}) {
+	if actual != nil && !reflect.ValueOf(actual).IsNil() {
+		t.Errorf("Expected error to be nil, found [%+v]", actual)
+	}
 }
